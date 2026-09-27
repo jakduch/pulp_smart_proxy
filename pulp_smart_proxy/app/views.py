@@ -41,6 +41,9 @@ class FeaturesV2View(APIView):
         # CONTENT_ORIGIN can be None, guess based on the API url then
         content_origin = settings.CONTENT_ORIGIN or pulp_url
         capabilities = [app.label for app in pulp_plugin_configs()]
+        container_registry_api_url = None
+        if "container" in capabilities:
+            container_registry_api_url = settings.SMART_PROXY_CONTAINER_REGISTRY_API_URL or pulp_url
         data = {
             "pulpcore": {
                 "http_enabled": False,
@@ -49,6 +52,7 @@ class FeaturesV2View(APIView):
                     "pulp_url": pulp_url,
                     "mirror": settings.SMART_PROXY_MIRROR,
                     "content_app_url": urljoin(content_origin, settings.CONTENT_PATH_PREFIX),
+                    "container_registry_api_url": container_registry_api_url,
                     "username": settings.SMART_PROXY_AUTH_USERNAME,
                     "password": settings.SMART_PROXY_AUTH_PASSWORD,
                     "client_authentication": settings.SMART_PROXY_AUTH_METHODS,
